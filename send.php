@@ -22,31 +22,27 @@
       <a href="index2.html" class="h1">Smart parking MS</a>
     </div>
     <div class="card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
+      <p class="login-box-msg">Send money to card</p>
 
       <form action="login.php" method="post">
         <div class="input-group mb-3">
-          <input type="email" name="email" class="form-control" placeholder="Email">
+          <input type="text" name="card" class="form-control" placeholder="Enter card number">
           <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
-            </div>
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" name="password" class="form-control" placeholder="Password">
+          <input type="number" name="amount" class="form-control" placeholder="Enter amount">
           <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
-            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="number" name="phone" class="form-control" placeholder="Enter momo number">
+          <div class="input-group-append">
           </div>
         </div>
         <div class="row">
-          <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-          </div>
           <div class="col-6">
-            <a href="send.php" class="btn btn-success btn-block">Add money to card</a>
+            <button type="submit" class="btn btn-success btn-block">Send money</button>
           </div>
           <!-- /.col -->
         </div>

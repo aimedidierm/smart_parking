@@ -51,7 +51,7 @@ $names="Aime DIdier";
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
         <li class="nav-item menu-open">
-          <a href="#" class="nav-link active">
+          <a href="dashboard.php" class="nav-link active">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
               Dashboard
@@ -59,7 +59,7 @@ $names="Aime DIdier";
           </a>
         </li>
         <li class="nav-item">
-          <a href="pages/calendar.html" class="nav-link">
+          <a href="customers.php" class="nav-link">
           <i class="nav-icon fas fa-users"></i>
             <p>
               Customers
@@ -67,7 +67,7 @@ $names="Aime DIdier";
           </a>
         </li>
         <li class="nav-item">
-          <a href="pages/gallery.html" class="nav-link">
+          <a href="price.php" class="nav-link">
           <i class="nav-icon fas fa-book"></i>
             <p>
               Parking price
@@ -75,7 +75,7 @@ $names="Aime DIdier";
           </a>
         </li>
         <li class="nav-item">
-          <a href="pages/kanban.html" class="nav-link">
+          <a href="history.php" class="nav-link">
           <i class="nav-icon fas fa-table"></i>
             <p>
               Parking history
@@ -83,7 +83,7 @@ $names="Aime DIdier";
           </a>
         </li>
         <li class="nav-item">
-          <a href="pages/kanban.html" class="nav-link">
+          <a href="transactions.php" class="nav-link">
             <i class="nav-icon fas fa-columns"></i>
             <p>
               Transactions
@@ -91,7 +91,7 @@ $names="Aime DIdier";
           </a>
         </li>
         <li class="nav-item">
-          <a href="pages/kanban.html" class="nav-link">
+          <a href="settings.php" class="nav-link">
           <i class="nav-icon fas fa-cog"></i>
             <p>
               Settings
