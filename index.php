@@ -1,3 +1,12 @@
+<?php
+require 'php-includes/connect.php';
+$cap=4;
+$query = "SELECT * FROM history ORDER BY id DESC limit 1";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+  $space=$cap-$rows['total'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,6 +30,9 @@
     <div class="card-header text-center">
       <a href="index2.html" class="h1">Smart parking MS</a>
     </div>
+    <div class="card-header text-center">
+      <a href="index2.html" class="h3"><b><?php echo $space;?></b> available praces</a>
+    </div>
     <div class="card-body">
       <p class="login-box-msg">Sign in to start your session</p>
 
@@ -33,7 +45,7 @@
             </div>
           </div>
         </div>
-        <div class="input-group mb-3">
+        <div class="input-group mb-4">
           <input type="password" name="password" class="form-control" placeholder="Password">
           <div class="input-group-append">
             <div class="input-group-text">
@@ -45,7 +57,7 @@
           <div class="col-4">
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
-          <div class="col-6">
+          <div class="col-8">
             <a href="send.php" class="btn btn-success btn-block">Add money to card</a>
           </div>
           <!-- /.col -->

@@ -4,6 +4,11 @@ ini_set('display_startup_errors',1);
 error_reporting(E_ALL);
 require '../php-includes/connect.php';
 require 'php-includes/check-login.php';
+$query = "SELECT * FROM price limit 1";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+$cprice=$rows['amount'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,6 +68,10 @@ require 'php-includes/check-login.php';
                     }
                     ?>
                     <form class="form-horizontal" method="post">
+                    <div class="form-group row">
+                        <h3>Current price: <?php echo $cprice ?>Rwf</h3>
+                        <br>
+                      </div>
                       <div class="form-group row">
                         <label for="inputName2" class="col-sm-2 col-form-label">Amount</label>
                         <div class="col-sm-10">
