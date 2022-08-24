@@ -1,23 +1,79 @@
-#include <ESP8266WiFi.h>
-#include <Servo.h>
 #include <LiquidCrystal_I2C.h>
-#include <Wire.h>
+#include <Servo.h>
+
+Servo myservo1;
+Servo myservo2;
+int lcdColumns = 16;
+int lcdRows = 2;
+const int enter = 3;
+const int outer = 2;
+LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 
 
-LiquidCrystal_I2C lcd(0x27, 16, 2);         //i2c display address 27 and 16x2 lcd display
-Servo myservo;                          //servo as gate
-Servo myservos;
+int pos = 0;
 
-int carEnter = D0;
-int carExited = D4;
+int enterState = 0;
+int outerState = 0;
 void setup() {
-  // put your setup code here, to run once:
-
+  myservo1.attach(6);
+  myservo2.attach(9);
+  pinMode(enter, OUTPUT);
+  pinMode(outer, OUTPUT);
+  // initialize LCD
+  lcd.init();
+  // turn on LCD backlight
+  lcd.backlight();
+  // print message
+  lcd.setCursor(2, 0);
+  lcd.print("Smart car");
+  lcd.setCursor(5, 1);
+  lcd.print("parking");
+  delay(3000);
+  lcd.clear();
+  Serial.begin(9600);
+  myservo1.write(0);
+  myservo2.write(0);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  enterState = digitalRead(enter);
+  outerState = digitalRead(outer);
+  
+  if (enterState == HIGH) {
+    intake();
+  }
+  if (outerState == HIGH) {
+    outertake();
+  }
 }
-void outgate(){}
-void opengate(){}
+
+void intake(){
+  lcd.clear();
+  lcd.setCursor(2, 0);
+  lcd.print("Welcome");
+  for (pos = 0; pos <= 90; pos += 1) {
+    myservo1.write(pos);
+    delay(15);
+  }
+  delay(5000);
+  for (pos = 90; pos >= 0; pos -= 1) {
+    myservo1.write(pos);
+    delay(15);
+  }
+}
+void outertake(){
+  lcd.clear();
+  lcd.setCursor(0, 1);
+  lcd.print("Thank you");
+  lcd.setCursor(0, 0);
+  lcd.print("Balance:");
+  for (pos = 0; pos <= 90; pos += 1) {
+    myservo2.write(pos);
+    delay(15);
+  }
+  delay(5000);
+  for (pos = 90; pos >= 0; pos -= 1) {
+    myservo2.write(pos);
+    delay(15);
+  }
+}
