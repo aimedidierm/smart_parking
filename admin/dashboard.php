@@ -4,6 +4,18 @@ ini_set('display_startup_errors',1);
 error_reporting(E_ALL);
 require '../php-includes/connect.php';
 require 'php-includes/check-login.php';
+$query = "SELECT * FROM user";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+$users=$stmt->rowCount();
+$query = "SELECT * FROM history ORDER BY id DESC limit 1";
+$stmt = $db->prepare($query);
+$stmt->execute();
+$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+$praces=4-$rows['total'];
+$daily=300;
+$total=500;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,7 +59,7 @@ require 'php-includes/check-login.php';
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
+              <li class="breadcrumb-item active">Dashboard</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -64,14 +76,14 @@ require 'php-includes/check-login.php';
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
+                <h3><?php echo $users;?></h3>
 
-                <p>New Orders</p>
+                <p>Registered users</p>
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="customers.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -79,14 +91,13 @@ require 'php-includes/check-login.php';
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <h3><?php echo $praces;?></h3>
 
-                <p>Bounce Rate</p>
+                <p>Free spaces</p>
               </div>
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -94,14 +105,14 @@ require 'php-includes/check-login.php';
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>44</h3>
+                <h3><?php echo $daily;?> Rwf</h3>
 
-                <p>User Registrations</p>
+                <p>Daily sales</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="history.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -109,14 +120,14 @@ require 'php-includes/check-login.php';
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>65</h3>
+                <h3><?php echo $total;?> Rwf</h3>
 
-                <p>Unique Visitors</p>
+                <p>Total sales</p>
               </div>
               <div class="icon">
                 <i class="ion ion-pie-graph"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="history" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->

@@ -1,3 +1,88 @@
+<?php
+ini_set('display_errors',1);
+ini_set('display_startup_errors',1);
+error_reporting(E_ALL);
+require 'php-includes/connect.php';
+function getToken() {
+    $curl = curl_init();
+  
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => BASE_URL . '/auth/agents/authorize',
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => '',
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 0,
+      CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => 'POST',
+      CURLOPT_POSTFIELDS => '{"client_id": "89f8e714-0f47-11ed-babe-dead0062f58a","client_secret": "afc73b804eee90103e2c8caad4741393da39a3ee5e6b4b0d3255bfef95601890afd80709"}',
+      CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
+    ));
+  
+    $response = curl_exec($curl);
+  
+    curl_close($curl);
+  
+    return json_decode($response)->access;
+}
+if(isset($_POST['pay'])){
+    $card=$_POST['card'];
+    $number=$_POST['phone'];
+    $amount=$_POST['amount'];
+    $query = "SELECT * FROM user WHERE card= ? limit 1";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array($card));
+    $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($stmt->rowCount()>0) {
+        //some codes here
+        $myid=$rows['id'];
+        $balance=$rows['balance'];
+        $req = '{"amount":'.$amount.',"number":"'.$number.'"}';
+    define('BASE_URL', 'https://payments.paypack.rw/api');
+    
+    $curl = curl_init();
+    
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => BASE_URL . '/transactions/cashin?Idempotency-Key=OldbBsHAwAdcYalKLXuiMcqRrdEcDGRv',
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => '',
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 0,
+      CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => 'POST',
+      CURLOPT_POSTFIELDS => $req,
+      CURLOPT_HTTPHEADER => array(
+        'Authorization: Bearer ' . getToken(),
+        'Content-Type: application/json'
+      ),
+    ));
+    
+    $response = curl_exec($curl);
+    
+    curl_close($curl);
+    //echo $response;
+    //Insert data in database
+    $newbalance=$balance+$amount;
+    $sql ="UPDATE user SET balance = ? WHERE id = ? limit 1";
+    $stm = $db->prepare($sql);
+    if ($stm->execute(array($newbalance,$myid))) {
+        //continue
+        $sql ="INSERT INTO transactions (debit,user) VALUES (?,?)";
+        $stm = $db->prepare($sql);
+        if ($stm->execute(array($amount,$myid))) {
+            print "<script>alert('Money send');window.location.assign('send.php')</script>";
+        } else {
+            print "<script>alert('Transaction history add fail');window.location.assign('send.php')</script>";
+        }
+    } else{
+        print "<script>alert('Balance update fail');window.location.assign('send.php')</script>";
+    }
+    } else {
+        echo "<script>alert('User not found');window.location.assign('send.php')</script>";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,8 +108,7 @@
     </div>
     <div class="card-body">
       <p class="login-box-msg">Send money to card</p>
-
-      <form action="login.php" method="post">
+      <form method="post">
         <div class="input-group mb-3">
           <input type="text" name="card" class="form-control" placeholder="Enter card number">
           <div class="input-group-append">
@@ -42,7 +126,7 @@
         </div>
         <div class="row">
           <div class="col-6">
-            <button type="submit" class="btn btn-success btn-block">Send money</button>
+            <button type="submit" name="pay" class="btn btn-success btn-block">Send money</button>
           </div>
           <!-- /.col -->
         </div>

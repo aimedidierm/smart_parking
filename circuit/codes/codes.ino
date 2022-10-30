@@ -15,7 +15,7 @@ const int outer = 2;
 #define red A1
 #define buzzer A2
 int pos = 0;
-
+int praces = 0;
 int enterState = 0;
 int outerState = 0;
 int k=0;
@@ -34,6 +34,20 @@ void setup()
   Serial.begin(115200);
   mfrc522.PCD_Init();
   lcd.backlight();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("System starting");
+  Serial.println("?kureba");
+  while(k==0){
+    if (Serial.available() > 0) {
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
+    if (root["cstatus"]) {
+    praces = root["cstatus"];
+    break;
+    }
+  }
+  }
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Smart car");
@@ -132,9 +146,11 @@ void kwinjira(){
       JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
       if (root["cstatus"]) {
       int cstatus = root["cstatus"];
-      if(cstatus==1){
+      if(cstatus==10){
         nospace();
         } else{
+          int praces = root["cstatus"];
+          praces++;
           intake();
           }
       }
@@ -153,9 +169,11 @@ void gusohoka(){
       JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
       if (root["cstatus"]) {
       int cstatus = root["cstatus"];
-      if(cstatus==1){
+      if(cstatus==10){
         lowbalance();
         } else{
+          praces = root["cstatus"];
+          
           int balance = root["balance"];
           lcd.clear();
           lcd.setCursor(0, 0);
@@ -182,6 +200,18 @@ void intake(){
     delay(15);
   }
   resetFunc();
+}
+void full(){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("No prace");
+  lcd.setCursor(0,1);
+  lcd.print("available");
+  delay(2000);
+  digitalWrite(red,HIGH);
+  tone(buzzer, 1000, 1000);
+  delay(3000);
+  digitalWrite(red,LOW);
 }
 void outertake(){
   lcd.setCursor(0, 1);
