@@ -38,7 +38,7 @@ void setup()
   lcd.setCursor(0, 0);
   lcd.print("System starting");
   Serial.println("?kureba");
-  while(k==0){
+  /*while(k==0){
     if (Serial.available() > 0) {
     DynamicJsonBuffer jsonBuffer;
     JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
@@ -47,7 +47,8 @@ void setup()
     break;
     }
   }
-  }
+  }*/
+  praces=2;
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Smart car");
@@ -141,20 +142,21 @@ void kwinjira(){
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Please wait");
-      if (Serial.available() > 0) {
-      DynamicJsonBuffer jsonBuffer;
-      JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
-      if (root["cstatus"]) {
-      int cstatus = root["cstatus"];
-      if(cstatus==10){
-        nospace();
-        } else{
-          int praces = root["cstatus"];
-          praces++;
+      delay(3000);
+      //if (Serial.available() > 0) {
+      //DynamicJsonBuffer jsonBuffer;
+      //JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
+      //if (root["cstatus"]) {
+      //int cstatus = root["cstatus"];
+      //if(cstatus==10){
+        //nospace();
+        //} else{
+          //int praces = root["cstatus"];
+          //praces++;
           intake();
-          }
-      }
-      }
+          //}
+      //}
+      //}
       }
   }
 void gusohoka(){
@@ -164,28 +166,30 @@ void gusohoka(){
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Please wait");
-      if (Serial.available() > 0) {
-      DynamicJsonBuffer jsonBuffer;
-      JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
-      if (root["cstatus"]) {
-      int cstatus = root["cstatus"];
-      if(cstatus==10){
-        lowbalance();
-        } else{
-          praces = root["cstatus"];
+      delay(3000);
+      //if (Serial.available() > 0) {
+      //DynamicJsonBuffer jsonBuffer;
+      //JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
+      //if (root["cstatus"]) {
+      //int cstatus = root["cstatus"];
+      //if(cstatus==10){
+        //lowbalance();
+        //} else{
+          //praces = root["cstatus"];
+          praces = 4;
           
-          int balance = root["balance"];
+          //int balance = root["balance"];
           lcd.clear();
           lcd.setCursor(0, 0);
           lcd.print("Balance:");
           lcd.setCursor(9, 0);
-          lcd.print(balance);
+          lcd.print("2000");
           outertake();
           }
       }
-      }
-      }
-  }
+      //}
+      //}
+  //}
 void intake(){
   lcd.clear();
   lcd.setCursor(2, 0);
