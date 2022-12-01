@@ -5,8 +5,8 @@ error_reporting(E_ALL);
 require 'php-includes/connect.php';
 //echo $time=date_default_timezone_get();
 $time = date('Y-m-d h:m:s');
-if(isset($_GET['gusohoka'])){
-    $card = $_GET['gusohoka'];
+if(isset($_POST['gusohoka'])){
+    $card = $_POST['gusohoka'];
     $query = "SELECT * FROM user WHERE card = ? limit 1";
     $stmt = $db->prepare($query);
     $stmt->execute(array($card));
@@ -49,8 +49,8 @@ if(isset($_GET['gusohoka'])){
     echo $response = json_encode($data);
 }*/
 }
-if(isset($_GET['kwinjira'])){
-    $card = $_GET['kwinjira'];
+if(isset($_POST['kwinjira'])){
+    $card = $_POST['kwinjira'];
     $query = "SELECT id FROM user WHERE card = ? limit 1";
     $stmt = $db->prepare($query);
     $stmt->execute(array($card));
@@ -73,7 +73,7 @@ if(isset($_GET['kwinjira'])){
     echo $response = json_encode($data);
 }
 }
-if(isset($_GET['kureba'])){
+if(isset($_POST['kureba'])){
     $query = "SELECT * FROM history ORDER BY id DESC limit 1";
     $stmt = $db->prepare($query);
     $stmt->execute();

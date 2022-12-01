@@ -2,11 +2,11 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
 
-const char* ssid = "MUCYO";
-const char* password = "0788274246";
-String serverName = "http://137.184.232.255/smart_toilet_card/data.php";
+const char* ssid = "Virus";
+const char* password = "mbega123455";
+String serverName = "http://137.184.232.255/smart_parking/req.php";
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   WiFi.begin(ssid, password);
   while(WiFi.status() != WL_CONNECTED) {
   delay(500);
