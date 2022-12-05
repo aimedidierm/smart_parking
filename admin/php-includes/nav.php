@@ -1,5 +1,11 @@
 <?php
-$names="Aime DIdier";
+$query = "SELECT * FROM admin WHERE email= ? limit 1";
+$stmt = $db->prepare($query);
+$stmt->execute(array($_SESSION['email']));
+$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($stmt->rowCount()>0) {
+    $names=$rows['names'];
+}
 ?>
 <div class="wrapper">
 
