@@ -1,12 +1,13 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
-
+#include<SoftwareSerial.h>
+SoftwareSerial s(3,1);
 const char* ssid = "Virus";
 const char* password = "mbega123455";
-String serverName = "http://137.184.232.255/smart_parking/req.php";
+String serverName = "http://192.168.43.76/smart_parking/index.php";
 void setup() {
-  Serial.begin(9600);
+  s.begin(9600);
   WiFi.begin(ssid, password);
   while(WiFi.status() != WL_CONNECTED) {
   delay(500);
@@ -14,18 +15,18 @@ void setup() {
 }
 
 void loop() {
-    if(WiFi.status()== WL_CONNECTED){
+    if(s.available( ) > 0){
       WiFiClient client;
       HTTPClient http;
-      //String   httpRequestData = Serial.readStringUntil('\n');
+      serverName=s.readStringUntil('\n');
       http.begin(client, serverName);
-      http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-      String httpRequestData = Serial.readStringUntil('\n');
+      http.addHeader("Content-Type", "multipart/form-data");
+      String httpRequestData = "card=123";
       int      httpResponseCode = http.POST(httpRequestData);
       if (httpResponseCode>0) {
-        Serial.println(httpResponseCode);
+        s.println(httpResponseCode);
         String payload = http.getString();
-        Serial.println(payload);
+        s.println(payload);
       }
       // Free resources
       http.end();
