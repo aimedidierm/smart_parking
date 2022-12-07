@@ -31,7 +31,7 @@ $rows = $stmt->fetch(PDO::FETCH_ASSOC);
       <a href="index2.html" class="h1">Smart parking MS</a>
     </div>
     <div class="card-header text-center">
-      <a href="index2.html" class="h3"><b><?php echo $space;?></b> available praces</a>
+      <a href="index2.html" class="h3"><b><?php echo $space;?></b> parking slots available</a>
     </div>
     <div class="card-body">
       <p class="login-box-msg">Sign in to start your session</p>

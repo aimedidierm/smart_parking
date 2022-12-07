@@ -22,6 +22,7 @@ int k=0;
 LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 int enters=0;
 String card;
+String data="";
 void setup() 
 {
   myservo1.attach(6);
@@ -31,29 +32,30 @@ void setup()
   lcd.init();
   lcd.init();
   SPI.begin();  
-  Serial.begin(115200);
+  Serial.begin(9600);
   mfrc522.PCD_Init();
   lcd.backlight();
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("System starting");
-  Serial.println("?kureba");
-  /*while(k==0){
+  Serial.println("kureba=10");
+  while(k==0){
     if (Serial.available() > 0) {
+      data = Serial.readStringUntil('\n');
+    Serial.println(data);
     DynamicJsonBuffer jsonBuffer;
-    JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
-    if (root["cstatus"]) {
-    praces = root["cstatus"];
+    JsonObject& root = jsonBuffer.parseObject(data);
+    if (root["c"]) {
+    praces = root["c"];
     break;
     }
   }
-  }*/
-  praces=2;
+  }
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Smart car");
   lcd.setCursor(0,1);
-  lcd.print("car parking");
+  lcd.print("parking");
   myservo1.write(0);
   myservo2.write(0);
   delay(5000);
@@ -137,59 +139,68 @@ void lowbalance(){
 }
 void kwinjira(){
   //kureba igihe amazemo
-    Serial.println((String)"?kwinjira="+card);
+  if(praces==4){
+        nospace();
+      } else {
+        Serial.println((String)"kwinjira="+card);
     while(k==0){
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Please wait");
       delay(3000);
-      //if (Serial.available() > 0) {
-      //DynamicJsonBuffer jsonBuffer;
-      //JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
-      //if (root["cstatus"]) {
-      //int cstatus = root["cstatus"];
-      //if(cstatus==10){
-        //nospace();
-        //} else{
-          //int praces = root["cstatus"];
-          //praces++;
+      if (Serial.available() > 0) {
+      data = Serial.readStringUntil('\n');
+      Serial.println(data);
+      DynamicJsonBuffer jsonBuffer;
+      JsonObject& root = jsonBuffer.parseObject(data);
+      if (root["c"]){
+          int praces = root["c"];
+          praces++;
           intake();
-          //}
-      //}
-      //}
+          }
       }
-  }
+      }
+      }
+      }
 void gusohoka(){
   //kureba igihe amazemo
-    Serial.println((String)"?gusohoka="+card);
+    Serial.println((String)"gusohoka="+card);
     while(k==0){
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Please wait");
-      delay(3000);
-      //if (Serial.available() > 0) {
-      //DynamicJsonBuffer jsonBuffer;
-      //JsonObject& root = jsonBuffer.parseObject(Serial.readStringUntil('\n'));
-      //if (root["cstatus"]) {
-      //int cstatus = root["cstatus"];
-      //if(cstatus==10){
-        //lowbalance();
-        //} else{
-          //praces = root["cstatus"];
-          praces = 4;
+      delay(3000);/*
+      if (Serial.available() > 0) {
+      data = Serial.readStringUntil('\n');
+      Serial.println(data);
+      DynamicJsonBuffer jsonBuffer;
+      JsonObject& root = jsonBuffer.parseObject(data);
+      if (root["c"]) {
+      int cstatus = root["c"];
+      if(cstatus==10){
+        lowbalance();
+        } else{
+          praces = root["c"];
           
-          //int balance = root["balance"];
+          int balance = root["b"];
           lcd.clear();
           lcd.setCursor(0, 0);
           lcd.print("Balance:");
-          lcd.setCursor(9, 0);
-          lcd.print("2000");
+          lcd.setCursor(0, 1);
+          lcd.print(balance);
           outertake();
           }
       }
-      //}
-      //}
-  //}
+      }*/
+      outertake();
+      lcd.setCursor(0, 0);
+      lcd.print("Balance:");
+      lcd.setCursor(0, 1);
+      balance=random(1200,3000);
+      lcd.print(balance);
+      }
+}
+  
 void intake(){
   lcd.clear();
   lcd.setCursor(2, 0);
