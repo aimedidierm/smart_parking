@@ -60,7 +60,6 @@ void stageone(){
   lcd.print("Device is ready");
   enterState = digitalRead(enter);
   outerState = digitalRead(outer);
-  
   if (enterState == HIGH) {
     enters=1;
     lcd.clear();
@@ -90,7 +89,7 @@ void stageone(){
   }
   }
   delay(500);
-  stageone;
+  stageone();
 }
     
 boolean getID(){
