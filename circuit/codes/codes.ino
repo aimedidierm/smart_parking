@@ -20,8 +20,9 @@ int enterState = 0;
 int outerState = 0;
 int k=0;
 LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
-int enters=0;
-String card;
+int enters=0,balance=0;
+boolean getID();
+String tagID = "";
 String data="";
 void setup() 
 {
@@ -38,6 +39,72 @@ void setup()
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("System starting");
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Smart car");
+  lcd.setCursor(0,1);
+  lcd.print("parking");
+  myservo1.write(0);
+  myservo2.write(0);
+  delay(5000);
+}
+
+void loop() 
+{
+  stageone();
+}
+
+void stageone(){
+  enterState = digitalRead(enter);
+  outerState = digitalRead(outer);
+  
+  if (enterState == HIGH) {
+    enters=1;
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Tap your card");
+    lcd.setCursor(0,1);
+    lcd.print("to enter");
+    int te=1;
+    while(te>0){
+    if (getID()){
+    kwinjira();
+    }
+    }
+  }
+  if (outerState == HIGH) {
+    enters=2;
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Tap your card");
+    lcd.setCursor(0,1);
+    lcd.print("to pay");
+    int te=1;
+    while(te>0){
+    if (getID()){
+    gusohoka();
+    }
+  }
+  }
+  stageone;
+}
+    
+boolean getID(){
+  if(!mfrc522.PICC_IsNewCardPresent()){
+    return false;
+    }
+  if(!mfrc522.PICC_ReadCardSerial()){
+    return false;
+    }
+    tagID = "";
+    for (uint8_t i = 0; i < 4; i++){
+      tagID.concat(String(mfrc522.uid.uidByte[i], HEX));
+      }
+      tagID.toUpperCase();
+      mfrc522.PICC_HaltA();
+      return true;
+}
+void kwinjira(){
   Serial.println("kureba=10");
   while(k==0){
     if (Serial.available() > 0) {
@@ -51,98 +118,10 @@ void setup()
     }
   }
   }
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Smart car");
-  lcd.setCursor(0,1);
-  lcd.print("parking");
-  myservo1.write(0);
-  myservo2.write(0);
-  delay(5000);
-}
-
-void loop() 
-{
-  enterState = digitalRead(enter);
-  outerState = digitalRead(outer);
-  
-  if (enterState == HIGH) {
-    enters=1;
-    readcard();
-    kwinjira();
-  }
-  if (outerState == HIGH) {
-    enters=2;
-    readcard();
-    gusohoka();
-  }
-}
- 
-void(* resetFunc) (void) = 0;
-  
-void readcard(){
-  // Look for new cards
-  int i=0,j=0,m=0,x=0,s=0,money=0;
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Tap your card");
-  delay(500);
-  if ( ! mfrc522.PICC_IsNewCardPresent()) 
-  {
-    readcard();
-  }
-  if ( ! mfrc522.PICC_ReadCardSerial()) 
-  {
-    readcard();
-  }
-  String content= "";
-  byte letter;
-  for (byte i = 0; i < mfrc522.uid.size; i++) 
-  {
-     content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
-     content.concat(String(mfrc522.uid.uidByte[i], HEX));
-  }
-  content.toUpperCase();
-  card=content.substring(1);
-  if (enters == 1) {
-    kwinjira();
-  }
-  if (enters == 2) {
-    gusohoka();
-  }
-}
-void nospace(){
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("No space");
-  lcd.setCursor(0,1);
-  lcd.print("available");
-  digitalWrite(red,HIGH);
-  tone(buzzer, 1000, 1000);
-  delay(3000);
-  digitalWrite(red,LOW);
-  lcd.clear();
-  resetFunc();
-}
-void lowbalance(){
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Insufficient");
-  lcd.setCursor(0,1);
-  lcd.print("funds");
-  digitalWrite(red,HIGH);
-  tone(buzzer, 1000, 1000);
-  delay(3000);
-  digitalWrite(red,LOW);
-  lcd.clear();
-  resetFunc();
-}
-void kwinjira(){
-  //kureba igihe amazemo
-  if(praces==4){
+  if(praces>3){
         nospace();
       } else {
-        Serial.println((String)"kwinjira="+card);
+        Serial.println((String)"kwinjira="+tagID);
     while(k==0){
       lcd.clear();
       lcd.setCursor(0, 0);
@@ -153,23 +132,22 @@ void kwinjira(){
       Serial.println(data);
       DynamicJsonBuffer jsonBuffer;
       JsonObject& root = jsonBuffer.parseObject(data);
-      if (root["c"]){
-          int praces = root["c"];
-          praces++;
+      if (root["c"]== 2){
           intake();
-          }
+          } else if (root["c"] == 10){
+            nospace();
+            }
       }
       }
       }
       }
 void gusohoka(){
-  //kureba igihe amazemo
-    Serial.println((String)"gusohoka="+card);
+    Serial.println((String)"gusohoka="+tagID);
     while(k==0){
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Please wait");
-      delay(3000);/*
+      delay(3000);
       if (Serial.available() > 0) {
       data = Serial.readStringUntil('\n');
       Serial.println(data);
@@ -179,10 +157,9 @@ void gusohoka(){
       int cstatus = root["c"];
       if(cstatus==10){
         lowbalance();
-        } else{
+        } else if (cstatus==1){
           praces = root["c"];
-          
-          int balance = root["b"];
+          balance = root["balance"];
           lcd.clear();
           lcd.setCursor(0, 0);
           lcd.print("Balance:");
@@ -191,13 +168,7 @@ void gusohoka(){
           outertake();
           }
       }
-      }*/
-      outertake();
-      lcd.setCursor(0, 0);
-      lcd.print("Balance:");
-      lcd.setCursor(0, 1);
-      balance=random(1200,3000);
-      lcd.print(balance);
+      }
       }
 }
   
@@ -214,19 +185,7 @@ void intake(){
     myservo1.write(pos);
     delay(15);
   }
-  resetFunc();
-}
-void full(){
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("No prace");
-  lcd.setCursor(0,1);
-  lcd.print("available");
-  delay(2000);
-  digitalWrite(red,HIGH);
-  tone(buzzer, 1000, 1000);
-  delay(3000);
-  digitalWrite(red,LOW);
+  stageone();
 }
 void outertake(){
   lcd.setCursor(0, 1);
@@ -240,5 +199,29 @@ void outertake(){
     myservo2.write(pos);
     delay(15);
   }
-  resetFunc();
+  stageone();
+}
+void nospace(){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("No parking");
+  lcd.setCursor(0,1);
+  lcd.print("place available");
+  digitalWrite(red,HIGH);
+  tone(buzzer, 1000, 1000);
+  delay(3000);
+  digitalWrite(red,LOW);
+  stageone();
+}
+void lowbalance(){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Insufficient");
+  lcd.setCursor(0,1);
+  lcd.print("funds");
+  digitalWrite(red,HIGH);
+  tone(buzzer, 1000, 1000);
+  delay(3000);
+  digitalWrite(red,LOW);
+  stageone();
 }
