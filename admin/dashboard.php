@@ -14,8 +14,15 @@ $stmt = $db->prepare($query);
 $stmt->execute();
 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
 $praces=4-$rows['total'];
-$daily=300;
-$total=500;
+$sql = "SELECT * FROM transactions";
+$stmt = $db->prepare($sql);
+$stmt->execute();
+$daily=$stmt->rowCount();
+$sql = "SELECT SUM(debit) FROM transactions";
+$stmt = $db->prepare($sql);
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$total=$row['SUM(debit)'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -105,9 +112,9 @@ $total=500;
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3><?php echo $daily;?> Rwf</h3>
+                <h3><?php echo $daily;?></h3>
 
-                <p>Daily sales</p>
+                <p>Transactions</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>

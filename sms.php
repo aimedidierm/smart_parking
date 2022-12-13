@@ -9,7 +9,7 @@ use Yvesniyo\IntouchSms\SmsSimple;
 $messi="Thank you for using our parking";
 $phone="0788750979";
 $sms = new SmsSimple();
-$sms->recipients([$phone])
+$sms->recipients(["0788750979"])
     ->message($messi)
     ->sender("+250780771319")
     ->username("kwizeraar")
