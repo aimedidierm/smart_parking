@@ -55,6 +55,9 @@ void loop()
 }
 
 void stageone(){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Device is ready");
   enterState = digitalRead(enter);
   outerState = digitalRead(outer);
   
@@ -86,6 +89,7 @@ void stageone(){
     }
   }
   }
+  delay(500);
   stageone;
 }
     
@@ -121,7 +125,18 @@ void kwinjira(){
   if(praces>3){
         nospace();
       } else {
-        Serial.println((String)"kwinjira="+tagID);
+        Serial.println((String)"kwinjira=\""+tagID+"\"");
+        if (tagID == "A37AC6AA"){
+      Serial.println((String)"kwinjira1="+tagID);
+      } else if (tagID == "23C4BCAB"){
+        Serial.println((String)"kwinjira2="+tagID);
+      } else if (tagID == "3E338AB"){
+        Serial.println((String)"kwinjira3="+tagID);
+      } else if (tagID == "534BFAB"){
+        Serial.println((String)"kwinjira4="+tagID);
+      } else if (tagID == "9384B2AB"){
+        Serial.println((String)"kwinjira5="+tagID);
+      }
     while(k==0){
       lcd.clear();
       lcd.setCursor(0, 0);
@@ -142,7 +157,17 @@ void kwinjira(){
       }
       }
 void gusohoka(){
-    Serial.println((String)"gusohoka="+tagID);
+    if (tagID == "A37AC6AA"){
+      Serial.println((String)"gusohoka1="+tagID);
+      } else if (tagID == "23C4BCAB"){
+        Serial.println((String)"gusohoka2="+tagID);
+      } else if (tagID == "3E338AB"){
+        Serial.println((String)"gusohoka3="+tagID);
+      } else if (tagID == "534BFAB"){
+        Serial.println((String)"gusohoka4="+tagID);
+      } else if (tagID == "9384B2AB"){
+        Serial.println((String)"gusohoka5="+tagID);
+      }
     while(k==0){
       lcd.clear();
       lcd.setCursor(0, 0);
@@ -163,7 +188,6 @@ void gusohoka(){
           lcd.clear();
           lcd.setCursor(0, 0);
           lcd.print("Balance:");
-          lcd.setCursor(0, 1);
           lcd.print(balance);
           outertake();
           }
