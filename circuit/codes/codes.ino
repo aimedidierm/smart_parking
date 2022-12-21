@@ -10,26 +10,20 @@
 Servo myservo1;
 Servo myservo2;
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
-const int enter = 3;
-const int outer = 2;
 #define red A1
 #define buzzer A2
 int pos = 0;
 int praces = 0;
-int enterState = 0;
-int outerState = 0;
 int k=0;
 LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 int enters=0,balance=0;
 boolean getID();
-String tagID = "";
-String data="";
+int res=0;
+String tagID = "",data="";
 void setup() 
 {
   myservo1.attach(6);
   myservo2.attach(9);
-  pinMode(enter, OUTPUT);
-  pinMode(outer, OUTPUT);
   lcd.init();
   lcd.init();
   SPI.begin();  
@@ -57,39 +51,38 @@ void loop()
 void stageone(){
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("Device is ready");
-  enterState = digitalRead(enter);
-  outerState = digitalRead(outer);
-  if (enterState == HIGH) {
-    enters=1;
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Tap your card");
-    lcd.setCursor(0,1);
-    lcd.print("to enter");
-    int te=1;
-    while(te>0){
-    if (getID()){
-    kwinjira();
-    }
+  lcd.print("Tap your card");
+  if (getID()){
+  Serial.println((String)"card="+tagID);
+  int my=0;
+  Serial.println(data);
+  while(my==0){
+  if (Serial.available() > 0) {
+    data = Serial.readStringUntil('\n');
+    Serial.println(data);
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject& root = jsonBuffer.parseObject(data);
+    if(root["c"]){
+    res=root["c"];
+    if (res == 1){
+        intake();
+        } else if(res == 2){
+            balance = root["balance"];
+            lcd.clear();
+            lcd.setCursor(0, 0);
+            lcd.print("Balance:");
+            lcd.print(balance);
+            outertake();
+          } else if(res == 3){
+            nospace();
+          } else if(res== 10){
+          lowbalance();
+          }
+        }
     }
   }
-  if (outerState == HIGH) {
-    enters=2;
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Tap your card");
-    lcd.setCursor(0,1);
-    lcd.print("to pay");
-    int te=1;
-    while(te>0){
-    if (getID()){
-    gusohoka();
-    }
   }
-  }
-  delay(500);
-  stageone();
+  delay(300);
 }
     
 boolean getID(){
@@ -107,94 +100,6 @@ boolean getID(){
       mfrc522.PICC_HaltA();
       return true;
 }
-void kwinjira(){
-  Serial.println("kureba=10");
-  while(k==0){
-    if (Serial.available() > 0) {
-      data = Serial.readStringUntil('\n');
-    Serial.println(data);
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& root = jsonBuffer.parseObject(data);
-    if (root["c"]) {
-    praces = root["c"];
-    break;
-    }
-  }
-  }
-  if(praces>3){
-        nospace();
-      } else {
-        Serial.println((String)"kwinjira=\""+tagID+"\"");
-        if (tagID == "A37AC6AA"){
-      Serial.println((String)"kwinjira1="+tagID);
-      } else if (tagID == "23C4BCAB"){
-        Serial.println((String)"kwinjira2="+tagID);
-      } else if (tagID == "3E338AB"){
-        Serial.println((String)"kwinjira3="+tagID);
-      } else if (tagID == "534BFAB"){
-        Serial.println((String)"kwinjira4="+tagID);
-      } else if (tagID == "9384B2AB"){
-        Serial.println((String)"kwinjira5="+tagID);
-      }
-    while(k==0){
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Please wait");
-      delay(3000);
-      if (Serial.available() > 0) {
-      data = Serial.readStringUntil('\n');
-      Serial.println(data);
-      DynamicJsonBuffer jsonBuffer;
-      JsonObject& root = jsonBuffer.parseObject(data);
-      if (root["c"]== 2){
-          intake();
-          } else if (root["c"] == 10){
-            nospace();
-            }
-      }
-      }
-      }
-      }
-void gusohoka(){
-    if (tagID == "A37AC6AA"){
-      Serial.println((String)"gusohoka1="+tagID);
-      } else if (tagID == "23C4BCAB"){
-        Serial.println((String)"gusohoka2="+tagID);
-      } else if (tagID == "3E338AB"){
-        Serial.println((String)"gusohoka3="+tagID);
-      } else if (tagID == "534BFAB"){
-        Serial.println((String)"gusohoka4="+tagID);
-      } else if (tagID == "9384B2AB"){
-        Serial.println((String)"gusohoka5="+tagID);
-      }
-    while(k==0){
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Please wait");
-      delay(3000);
-      if (Serial.available() > 0) {
-      data = Serial.readStringUntil('\n');
-      Serial.println(data);
-      DynamicJsonBuffer jsonBuffer;
-      JsonObject& root = jsonBuffer.parseObject(data);
-      if (root["c"]) {
-      int cstatus = root["c"];
-      if(cstatus==10){
-        lowbalance();
-        } else if (cstatus==1){
-          praces = root["c"];
-          balance = root["balance"];
-          lcd.clear();
-          lcd.setCursor(0, 0);
-          lcd.print("Balance:");
-          lcd.print(balance);
-          outertake();
-          }
-      }
-      }
-      }
-}
-  
 void intake(){
   lcd.clear();
   lcd.setCursor(2, 0);
