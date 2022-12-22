@@ -1,6 +1,6 @@
 <?php
 require 'php-includes/connect.php';
-$cap=4;
+$cap=3;
 $query = "SELECT * FROM history ORDER BY id DESC limit 1";
 $stmt = $db->prepare($query);
 $stmt->execute();

@@ -1,35 +1,70 @@
 <?php
-ini_set('display_errors',1);
-ini_set('display_startup_errors',1);
-error_reporting(E_ALL);
-require 'php-includes/connect.php';
 /*
-//kwinjira
-$data = array('c' => 1);
-echo $response = json_encode($data)."\n";
-//gusohoka
-$data = array('c' => 2,'balance' =>$newbalance);
-echo $response = json_encode($data)."\n";
-//No solts
-$data = array('c' => 3);
-echo $response = json_encode($data)."\n";
-//lowbalance
-$data = array('c' => 10);
-echo $response = json_encode($data)."\n";
-*/
+require 'php-includes/db_conn.php';
+$in=0;
+$p=0;
+$b=0;
+$balance=0;
+$time = date('Y-m-d h:m:s');
+$card = $_GET['card'];
+$sql="SELECT * FROM user WHERE card = '$card' limit 1";
+$exe=$conn->query($sql);
+if($exe->num_rows>0){
+    while ($row=$exe->fetch_array()) {
+     $user=$row['id'];
+     $balance=$row['balance']; 
+ }
 
-if(isset($_POST['card'])){
-    $card=$_POST['card'];
-    $query = "SELECT * FROM user WHERE card = ? limit 1";
-    $stmt = $db->prepare($query);
-    $stmt->execute(array($card));
-    if ($stmt->rowCount() > 0) {
-        $rows = $stmt->fetch(PDO::FETCH_ASSOC);
-        $uid=$rows['id'];
-        $query = "SELECT * FROM history WHERE user=? ORDER BY id DESC limit 1";
-        $stmt = $db->prepare($query);
-        $stmt->execute(array($card));
-        $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+ $sql="SELECT amount FROM price limit 1";
+ $exe=$conn->query($sql);
+ while($row=$exe->fetch_array()){
+    $amount=$row['amount'];
+}
+$sql="SELECT * FROM `history` WHERE enter IS NOT null AND goout  IS null";
+$exe=$conn->query($sql);
+$numCars=$exe->num_rows;
+if($exe->num_rows>0){
+    // when the user is getting out 
+    $in=1;
+    if($amount<=$balance){
+        $b=1;
+        $sql2="UPDATE `history` SET `goout` = '$time',`amount`='$amount' WHERE `history`.`user` = '$user'";
+        $exe2=$conn->query($sql2);
+        $balance=$balance-$amount;
+        $sql3="UPDATE `user` SET `balance` = '$balance' WHERE `user`.`id` = '$user'";
+        $exe3=$conn->query($sql3);
+
+    }
+    else{
+        $b=0;
     }
 }
+else{
+    
+
+    $in=0;
+    if ($numCars>=4) {
+        $p=0;
+    }
+    else{
+        $p=1;
+        $numCars=$numCars+1;
+        $sql="INSERT INTO `history`(`id`, `user`, `enter`, `goout`, `total`, `amount`) VALUES (null,'$user','$time',null,'$numCars','0')";
+        $exe=$conn->query($sql);
+    }
+    
+}
+}
+$data = array('in' =>$in,'b'=>$b,'p'=>$p,'balance'=>$balance); 
+echo $response = json_encode($data)."\n";*/
+
+//kwinjira
+//$data = array('d1' => 1);
+
+//gusohoka
+//$data = array('d1' => 2);
+echo "1";
+//full
+$data = array('d1' => 3);
+echo $response = json_encode($data)."\n";
 ?>
