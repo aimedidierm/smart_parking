@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 15, 2022 at 09:20 PM
+-- Generation Time: Jan 02, 2023 at 12:24 AM
 -- Server version: 8.0.29-0ubuntu0.20.04.3
 -- PHP Version: 7.4.3
 
@@ -43,7 +43,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `email`, `names`, `phone`, `address`, `password`, `time`) VALUES
-(1, 'admin@gmail.com', 'Aime DIdier ', '0788750979', 'Huye, Rwanda', '3b081fd5426c134088a9b1466ff4c224', '2022-06-17 13:58:07');
+(1, 'admin@gmail.com', 'Kwizeram Armand', '0788750979', 'Huye, Rwanda', '3b081fd5426c134088a9b1466ff4c224', '2022-06-17 13:58:07');
 
 -- --------------------------------------------------------
 
@@ -65,7 +65,7 @@ CREATE TABLE `history` (
 --
 
 INSERT INTO `history` (`id`, `user`, `enter`, `goout`, `total`, `amount`) VALUES
-(1, 1, '2022-08-15 21:11:01', NULL, 0, 0);
+(48, 16, '2022-12-22 03:12:30', NULL, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -84,7 +84,7 @@ CREATE TABLE `price` (
 --
 
 INSERT INTO `price` (`id`, `amount`, `time`) VALUES
-(1, 1000, '2022-08-15 20:40:16');
+(1, 100, '2022-08-15 20:40:16');
 
 -- --------------------------------------------------------
 
@@ -105,7 +105,11 @@ CREATE TABLE `transactions` (
 --
 
 INSERT INTO `transactions` (`id`, `user`, `debit`, `credit`, `time`) VALUES
-(1, 1, 0, NULL, '2022-08-15 21:01:32');
+(1, 7, 0, NULL, '2022-08-15 21:01:32'),
+(2, 7, 100, NULL, '2022-10-30 22:18:48'),
+(3, 7, 100, NULL, '2022-10-30 22:19:43'),
+(4, 8, 100, NULL, '2022-12-05 15:12:39'),
+(5, 8, 100, NULL, '2022-12-05 15:19:36');
 
 -- --------------------------------------------------------
 
@@ -128,7 +132,11 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `names`, `card`, `email`, `phone`, `balance`, `time`) VALUES
-(1, 'Didier', '2456314562', 'aimedidiermugisha@gmail.com', '0788750979', 0, '2022-06-25 22:23:06');
+(7, 'UWASE Sandra', 'A37AC6AA', 'uwasandra3782@gmail.com', '0782164922', 1200, '2022-08-24 08:44:37'),
+(8, 'HATEGEKIMANA Kwizera Armand', '23C4BCAB', 'kwizeraarmand202@gmail.com', '0780771319', 0, '2022-08-24 08:46:48'),
+(9, 'Aime Didier MUGISHA', '03E338AB', 'aimedidiermugisha@gmail.com', '0788750979', 0, '2022-08-24 08:48:03'),
+(10, 'Theophile BIRAMAHIRE', '534BFAB', 'biratheo15@yahoo.fr', '0787571173', 0, '2022-08-24 08:51:28'),
+(16, 'Karyarya', '9384B2AB', 'karyarya@gmail.com', '0785714384', 0, '2022-12-07 10:28:17');
 
 --
 -- Indexes for dumped tables
@@ -183,7 +191,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `history`
 --
 ALTER TABLE `history`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `price`
@@ -195,13 +203,13 @@ ALTER TABLE `price`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

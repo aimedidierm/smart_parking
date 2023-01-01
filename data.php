@@ -63,7 +63,7 @@ echo $response = json_encode($data)."\n";*/
 
 //gusohoka
 //$data = array('d1' => 2);
-echo "1";
+//echo "1";
 //full
 $data = array('d1' => 3);
 echo $response = json_encode($data)."\n";
